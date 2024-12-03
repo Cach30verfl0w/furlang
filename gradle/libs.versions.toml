@@ -1,0 +1,22 @@
+[versions]
+furlang = "1.0.0"
+kotlin = "2.1.0" # https://kotlinlang.org/docs/releases.html#release-details
+antlr = "1.0.0" # https://github.com/Strumenta/antlr-kotlin/releases
+intellij = "1.17.4" # https://plugins.gradle.org/plugin/org.jetbrains.intellij
+antlr-intellij = "0.1" # https://github.com/antlr/antlr4-intellij-adaptor/releases
+download = "5.6.0" # https://github.com/michel-kraemer/gradle-download-task/releases
+llvm-prebuilt = "v2023.3.0" # https://github.com/awakecoding/llvm-prebuilt/releases
+llvm-release = "16.0.6" # https://github.com/awakecoding/llvm-prebuilt/releases
+
+jvm-target = "17"
+
+[libraries]
+antlr-runtime = { module = "com.strumenta:antlr-kotlin-runtime", version.ref = "antlr" }
+antlr-intellij = { module = "org.antlr:antlr4-intellij-adaptor", version.ref = "antlr-intellij" }
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+intellij = { id = "org.jetbrains.intellij", version.ref = "intellij" }
+download = { id = "de.undercouch.download", version.ref = "download" }
+antlr = { id = "com.strumenta.antlr-kotlin", version.ref = "antlr" }
