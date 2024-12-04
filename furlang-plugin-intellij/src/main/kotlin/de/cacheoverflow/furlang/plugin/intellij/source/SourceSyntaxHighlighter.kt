@@ -72,6 +72,8 @@ class SourceSyntaxHighlighter : SyntaxHighlighterBase() {
             FurlangLexer.DOUBLE_QUOTE, FurlangLexer.STRING_MODE_TEXT -> arrayOf(HighlighterRegistry.Companion.SOURCE.stringKey)
             FurlangLexer.ML_STRING_BEGIN, FurlangLexer.ML_STRING_END, FurlangLexer.ML_STRING_MODE_TEXT ->
                 arrayOf(HighlighterRegistry.Companion.SOURCE.stringKey)
+            FurlangLexer.LINE_COMMENT -> arrayOf(HighlighterRegistry.Companion.SOURCE.lineCommentKey)
+            FurlangLexer.BLOCK_COMMENT -> arrayOf(HighlighterRegistry.Companion.SOURCE.blockCommentKey)
             else -> emptyArray()
         }
     }

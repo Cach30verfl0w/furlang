@@ -25,5 +25,6 @@
         <fileType name="Furlang" language="Furlang" implementationClass="de.cacheoverflow.furlang.plugin.intellij.source.FurlangSourceFileType" extensions="arf" />
         <lang.parserDefinition language="Furlang" implementationClass="de.cacheoverflow.furlang.plugin.intellij.source.SourceParserDefinition" />
         <lang.syntaxHighlighter language="Furlang" implementationClass="de.cacheoverflow.furlang.plugin.intellij.source.SourceSyntaxHighlighter" />
+        <colorSettingsPage implementation="de.cacheoverflow.furlang.plugin.intellij.source.SourceColorSettingsPage" />
     </extensions>
 </idea-plugin>

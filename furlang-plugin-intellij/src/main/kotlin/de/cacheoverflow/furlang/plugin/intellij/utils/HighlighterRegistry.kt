@@ -16,8 +16,11 @@ internal class HighlighterRegistry(private val prefix: String) {
     internal val numberKey: TextAttributesKey = getOrCreate("Number", DefaultLanguageHighlighterColors.NUMBER)
     internal val bracesKey: TextAttributesKey = getOrCreate("Braces", DefaultLanguageHighlighterColors.BRACES)
     internal val stringKey: TextAttributesKey = getOrCreate("String", DefaultLanguageHighlighterColors.STRING)
+    internal val blockCommentKey: TextAttributesKey = getOrCreate("Comment", DefaultLanguageHighlighterColors.BLOCK_COMMENT)
+    internal val lineCommentKey: TextAttributesKey = getOrCreate("Comment", DefaultLanguageHighlighterColors.LINE_COMMENT)
     
-    internal fun getAll(): Array<AttributesDescriptor> = values.map { (key, value) -> AttributesDescriptor(key, value) }.toTypedArray()
+    internal fun getAsDescriptors(): Array<AttributesDescriptor> = values.map { (key, value) -> AttributesDescriptor(key, value) }
+        .toTypedArray()
     internal fun getOrCreate(name: String, default: TextAttributesKey): TextAttributesKey {
         if (!values.containsKey(name)) {
             val attributesKey = TextAttributesKey.createTextAttributesKey("${prefix.uppercase()}_${name.uppercase()}", default)
