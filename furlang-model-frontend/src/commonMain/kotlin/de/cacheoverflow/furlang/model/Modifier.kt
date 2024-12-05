@@ -74,6 +74,7 @@ value class Modifier private constructor(val raw: UShort) {
     
     companion object {
         private const val ACCESS_MODIFIERS: UShort = 0b0000_0000_0000_1111U
+        val NONE: Modifier = Modifier(0u)
         
         /**
          * Represents the `public` access modifier. This modifier allows the marked element to be accessed from any other code, regardless

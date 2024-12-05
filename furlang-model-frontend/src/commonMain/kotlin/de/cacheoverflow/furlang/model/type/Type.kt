@@ -15,12 +15,10 @@
  *
  */
 
-package de.cacheoverflow.furlang.model.node
+package de.cacheoverflow.furlang.model.type
 
 import de.cacheoverflow.furlang.model.Identifier
 
-/**
- * @author Cedric Hammes
- * @since  02/12/2024
- */
-class AnnotationNode(override val name: Identifier) : Node
+interface Type {
+    val literal: Identifier
+}
