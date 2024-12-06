@@ -43,156 +43,204 @@ options {
 
 
 file: (declaration | NL)+ EOF;
-end: SEMICOLON | NL;
 
-// Type parameters
-closure_modifier: KW_CONST;
+// +-------------------------------------------------------------------------------------------------------------------------------------+
+// |                                                   Type, type and value parameters                                                   |
+// +-------------------------------------------------------------------------------------------------------------------------------------+
 
-unsigned_int_type:
-    TYPE_U8
-    | TYPE_U16
-    | TYPE_U32
-    | TYPE_U64
-    ;
+// Type System
+unsignedIntType: TYPE_U8 | TYPE_U16 | TYPE_U32 | TYPE_U64;
+signedIntType: TYPE_I8 | TYPE_I16 | TYPE_I32 | TYPE_I64;
+intType: signedIntType | unsignedIntType;
 
-signed_int_type:
-    TYPE_I8
-    | TYPE_I16
-    | TYPE_I32
-    | TYPE_I64
-    ;
-
-int_type:
-    signed_int_type
-    | unsigned_int_type
-    ;
-
-closure_type:
-    closure_modifier*?
-    L_PAREN
-    (type COMMA?)*?
-    R_PAREN
-    ARROW
-    type;
+closureModifier: KW_CONST;
+closureType: closureModifier*? L_PAREN (type COMMA?)*? R_PAREN ARROW type;
 
 type:
-    closure_type
-    | type type_parameters_usage
+    closureType
     | L_PAREN (type COMMA?)+ R_PAREN
-    | int_type
+    | intType
     | TYPE_BOOLEAN
     | TYPE_STRING
     | IDENTIFIER
     ;
 
-type_parameter_declaration_modifier: KW_VARARG;
-type_parameter_declaration: type_parameter_declaration_modifier? IDENTIFIER (COLON expression)?;
-type_parameters_declaration: L_CHEVRON (type_parameter_declaration COMMA?)+ R_CHEVRON;
-type_parameters_usage: L_CHEVRON (type COMMA?)+? R_CHEVRON;
+// Type parameters
+typeParameterDeclarationModifier: KW_VARARG;
+typeParameterDonstraints: COLON expression;
+typeParameterDefault: ARROW expression;
+typeParameterDeclaration: typeParameterDeclarationModifier? IDENTIFIER typeParameterDonstraints? typeParameterDefault?;
+typeParametersDeclaration: L_CHEVRON (typeParameterDeclaration COMMA?)+ R_CHEVRON;
 
 // Value parameters
-value_parameter_declaration_modifier: KW_VARARG;
-value_parameter_declaration: value_parameter_declaration_modifier? IDENTIFIER COLON type;
-value_parameter_declarations: (value_parameter_declaration COMMA?)+;
+functionValueParameterDeclarationModifier: KW_VARARG;
+functionValueParameterDeclaration: functionValueParameterDeclarationModifier? IDENTIFIER COLON type;
+functionValueParameterDeclarations: (functionValueParameterDeclaration COMMA?)+;
 
-// Annotation
-annotation_usage:
-    AT
+constructorValueParameterDeclarationModifier: KW_VARARG;
+constructorValueParameterDeclaration: constructorValueParameterDeclarationModifier? (KW_LET KW_MUTABLE?)? IDENTIFIER COLON type;
+constructorValueParameterDeclarations: (constructorValueParameterDeclaration COMMA?)+;
+
+// +-------------------------------------------------------------------------------------------------------------------------------------+
+// |                                                             Declaration                                                             |
+// +-------------------------------------------------------------------------------------------------------------------------------------+
+
+declaration:
+    importDeclaration
+    | functionDeclaration
+    | class_declaration;
+
+importDeclaration: KW_IMPORT identifier end?;
+
+annotationParameter: (IDENTIFIER ASSIGN)? expression COMMA?;
+annotationParameters: L_PAREN annotationParameter+ R_PAREN;
+annotationDeclaration: AT IDENTIFIER annotationParameters?;
+
+// Class
+class_modifier: KW_PUBLIC | KW_PROTECTED | KW_PRIVATE | KW_INTERNAL | KW_OPEN | KW_ABSTRACT;
+class_declaration:
+    (annotationDeclaration+)?
+    class_modifier*?
+    (KW_CLASS | KW_INTERFACE | KW_ANNOTATION)
     IDENTIFIER
-    annotation_parameters?
+    typeParametersDeclaration?
+    constructorFunctionSignature?
+    L_BRACE NL?
+    (declaration | NL)+
+    R_BRACE
     ;
 
-annotation_parameters:
+// Function
+multilineFunctionBody: L_BRACE NL? (declaration | statement | expression | NL)*? R_BRACE;
+singlelineFunctionBody: ARROW expression;
+functionBody: multilineFunctionBody | singlelineFunctionBody;
+
+constructorFunctionModifier: KW_PUBLIC | KW_PROTECTED | KW_PRIVATE | KW_INTERNAL;
+constructorFunctionSignature:
+    (annotationDeclaration+)?
+    (constructorFunctionModifier+)?
+    KW_CONSTRUCTOR
     L_PAREN
-    annotation_parameter+
+    constructorValueParameterDeclarations?
     R_PAREN
     ;
+constructorFunctionDeclaration: constructorFunctionSignature multilineFunctionBody;
 
-annotation_parameter:
-    (
-        IDENTIFIER
-        EQUALS
-    )?
-    expression
-    COMMA?
+functionCallingConvention: KW_CALLCONV L_PAREN simpleString R_PAREN;
+namedFunctionModifier: functionCallingConvention | KW_PUBLIC | KW_PROTECTED | KW_PRIVATE | KW_INTERNAL | KW_EXTERN | KW_CONST;
+namedFunctionSignature:
+    (annotationDeclaration+)?
+    (namedFunctionModifier+)?
+    KW_FUNCTION
+    typeParameterDeclaration?
+    IDENTIFIER
+    L_PAREN
+    functionValueParameterDeclarations
+    R_PAREN
+    (COLON type)?;
+namedFunctionDeclaration:
+    namedFunctionSignature
+    functionBody
     ;
 
-annotations_usage: (annotation_usage NL)+;
-
-// Declaration
-declaration:
-    function_declaration
-    | import_declaration
+functionDeclaration:
+    namedFunctionDeclaration
+    | constructorFunctionDeclaration
     ;
 
-import_declaration:
-    KW_IMPORT
-    identifier
-    end?
-    ;
+// +-------------------------------------------------------------------------------------------------------------------------------------+
+// |                                                              Statement                                                              |
+// +-------------------------------------------------------------------------------------------------------------------------------------+
 
-// Expression and Statements
 statement:
-    (
-        return_statement
-        | let_statement
-        | for_statement
-        | while_statement
-    )
-    end
+    letStatement
+    | returnStatement
+    | breakStatement
+    | continueStatement
     ;
 
-let_statement:
+breakStatement: KW_BREAK end?;
+continueStatement: KW_CONTINUE end?;
+returnStatement: KW_RETURN expression? end?;
+
+letStatement:
     KW_LET
     KW_MUTABLE?
     (IDENTIFIER | L_PAREN (IDENTIFIER COMMA?)+ R_PAREN)
     (COLON type)?
     ASSIGN
-    (expression | statement)
+    expression
     end?
     ;
 
-while_statement: // TODO: do while support
-    KW_WHILE
-    L_PAREN
-    expression
-    R_PAREN
-    L_BRACE
-    (statement | expression | NL)*?
+// +-------------------------------------------------------------------------------------------------------------------------------------+
+// |                                                        Expression and string                                                        |
+// +-------------------------------------------------------------------------------------------------------------------------------------+
+
+// Strings
+string: simpleString | multilineString;
+
+simpleString:
+    (DOUBLE_QUOTE
+    (STRING_MODE_TEXT
+    | STRING_MODE_ESCAPED_STRING_END
+    | STRING_MODE_ESCAPED_CHAR
+    | (STRING_MODE_LERP_BEGIN
+    expression*?
+    R_BRACE))+
+    DOUBLE_QUOTE)
+    | EMPTY_STRING
+    ;
+
+multilineString:
+    (ML_STRING_BEGIN
+    (ML_STRING_MODE_TEXT
+    | ML_STRING_MODE_ESCAPED_ML_STRING_END
+    | ML_STRING_MODE_ESCAPED_CHAR
+    | (ML_STRING_MODE_LERP_BEGIN
+    expression*?
+    R_BRACE))+
+    ML_STRING_END)
+    | EMPTY_ML_STRING
+    ;
+
+// Expression
+primary: INTEGER | FLOAT | string | KW_TRUE | KW_FALSE;
+tupleExpression: L_PAREN (expression COMMA?)+ R_PAREN end?;
+
+callExpression:
+    identifier
+    (
+        (
+            L_PAREN
+            (expression COMMA?)*?
+            R_PAREN
+            closureExpression?
+        )
+        | closureExpression
+    )
+    end?
+    ;
+
+closureVariable: IDENTIFIER (COLON type)?;
+
+closureExpression:
+    L_BRACE NL?
+    (
+        L_PAREN
+        (closureVariable COMMA?)+
+        R_PAREN
+        ARROW NL?
+    )?
+    (declaration | statement | expression | NL)+
     R_BRACE
-    end?
     ;
-
-for_statement:
-    KW_FOR
-    L_PAREN
-    expression
-    R_PAREN
-    L_BRACE
-    (statement | expression | NL)*?
-    R_BRACE
-    end?
-    ;
-
-return_statement:
-    KW_RETURN
-    expression
-    | KW_BREAK
-    | KW_CONTINUE
-    ;
-
-primary:
-    INTEGER
-    | FLOAT
-    | string
-    | KW_TRUE
-    | KW_FALSE;
 
 expression:
     primary
-    | closure_expression
-    | tuple_expression
-    | call_expression
+    | closureExpression
+    | tupleExpression
+    | callExpression
     | L_PAREN expression R_PAREN
     | expression DOTDOT expression
     | expression (LOGICAL_AND | LOGICAL_OR) expression
@@ -205,117 +253,11 @@ expression:
     | expression (EQUALS | NOT_EQUALS) expression
     | <assoc_right> expression (ASSIGN) expression
     | identifier
-    | IDENTIFIER
     ;
 
-tuple_expression:
-    L_PAREN
-    (expression COMMA?)+
-    R_PAREN
-    end?
-    ;
+// +-------------------------------------------------------------------------------------------------------------------------------------+
+// |                                                                Other                                                                |
+// +-------------------------------------------------------------------------------------------------------------------------------------+
 
-call_expression:
-    identifier
-    (
-        (
-            L_PAREN
-            (expression COMMA?)*?
-            R_PAREN
-            closure_expression?
-        )
-        | closure_expression
-    )
-    end?
-    ;
-
-closure_variable:
-    IDENTIFIER
-    (
-        COLON
-        type
-    )?
-    ;
-
-closure_expression:
-    L_BRACE NL?
-    (
-        L_PAREN
-        (closure_variable COMMA?)+
-        R_PAREN
-        ARROW NL?
-    )?
-    (statement | declaration | expression | NL)*?
-    R_BRACE
-    ;
-
-// String
-string: simple_string | ml_string;
-
-simple_string:
-    (DOUBLE_QUOTE
-    (STRING_MODE_TEXT
-    | STRING_MODE_ESCAPED_STRING_END
-    | STRING_MODE_ESCAPED_CHAR
-    | (STRING_MODE_LERP_BEGIN
-    expression*?
-    R_BRACE))+
-    DOUBLE_QUOTE)
-    | EMPTY_STRING
-    ;
-
-ml_string:
-    (ML_STRING_BEGIN
-    (ML_STRING_MODE_TEXT
-    | ML_STRING_MODE_ESCAPED_ML_STRING_END
-    | ML_STRING_MODE_ESCAPED_CHAR
-    | (ML_STRING_MODE_LERP_BEGIN
-    expression*?
-    R_BRACE))+
-    ML_STRING_END)
-    | EMPTY_ML_STRING
-    ;
-
-// Function
-function_calling_convention: KW_CALLCONV L_PAREN simple_string R_PAREN;
-
-function_modifier:
-    KW_PUBLIC
-    | KW_PROTECTED
-    | KW_PRIVATE
-    | KW_INTERNAL
-    | KW_EXTERN
-    | KW_CONST
-    | function_calling_convention
-    ;
-
-function_declaration:
-    annotations_usage?
-    function_signature_declaration
-    (multiline_function_body | singleline_function_body)?
-    ;
-
-function_signature_declaration:
-    function_modifier*?
-    KW_FUNCTION
-    type_parameters_declaration?
-    IDENTIFIER
-    L_PAREN
-    value_parameter_declarations?
-    R_PAREN
-    (COLON type)?
-    ;
-
-multiline_function_body:
-    L_BRACE NL?
-    (statement | declaration | expression | NL)*?
-    R_BRACE
-    ;
-
-singleline_function_body:
-    ARROW
-    expression
-    ;
-
-// Other
-identifier: IDENTIFIER ((DOT | COLONCOLON) IDENTIFIER)*?;
+identifier: IDENTIFIER (DOT IDENTIFIER)*?;
+end: SEMICOLON | NL;

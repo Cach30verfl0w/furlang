@@ -78,6 +78,7 @@ KW_CALLCONV: 'callconv';
 KW_CLASS: 'class';
 KW_INTERFACE: 'interface';
 KW_ANNOTATION: 'annotation';
+KW_CONSTRUCTOR: 'constructor';
 
 KW_IN: 'in';
 KW_AS: 'as';
