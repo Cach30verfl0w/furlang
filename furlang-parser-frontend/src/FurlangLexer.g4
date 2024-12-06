@@ -99,10 +99,16 @@ KW_TRUE: 'true';
 KW_FALSE: 'false';
 
 // Types
-SIGNED_INT: 'i' INTEGER;
-UNSIGNED_INT: 'u' INTEGER;
-BOOLEAN: 'bool';
-STRING: 'str';
+TYPE_I8: 'i8';
+TYPE_I16: 'i16';
+TYPE_I32: 'i32';
+TYPE_I64: 'i64';
+TYPE_U8: 'u8';
+TYPE_U16: 'u16';
+TYPE_U32: 'u32';
+TYPE_U64: 'u64';
+TYPE_BOOLEAN: 'bool';
+TYPE_STRING: 'str';
 
 // Operator
 ASSIGN: '=';
@@ -160,9 +166,6 @@ fragment DECIMAL_DIGIT: [0-9]+;
 fragment BINARY_DIGIT: [0-1]+;
 fragment HEXADECIMAL_DIGIT: [0-9a-fA-F]+;
 fragment OCTAL_DIGIT: [0-7]+;
-
-// Error
-ERROR: .;
 
 // Strings
 mode STRING_MODE;

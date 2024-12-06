@@ -41,21 +41,47 @@ options {
     tokenVocab = FurlangLexer;
 }
 
-file: (declaration | NL)*?;
+
+file: (declaration | NL)+ EOF;
 end: SEMICOLON | NL;
 
 // Type parameters
 closure_modifier: KW_CONST;
 
-closure_type: closure_modifier*? L_PAREN (type COMMA?)*? R_PAREN ARROW type;
+unsigned_int_type:
+    TYPE_U8
+    | TYPE_U16
+    | TYPE_U32
+    | TYPE_U64
+    ;
+
+signed_int_type:
+    TYPE_I8
+    | TYPE_I16
+    | TYPE_I32
+    | TYPE_I64
+    ;
+
+int_type:
+    signed_int_type
+    | unsigned_int_type
+    ;
+
+closure_type:
+    closure_modifier*?
+    L_PAREN
+    (type COMMA?)*?
+    R_PAREN
+    ARROW
+    type;
+
 type:
     closure_type
     | type type_parameters_usage
     | L_PAREN (type COMMA?)+ R_PAREN
-    | SIGNED_INT
-    | UNSIGNED_INT
-    | BOOLEAN
-    | STRING
+    | int_type
+    | TYPE_BOOLEAN
+    | TYPE_STRING
     | IDENTIFIER
     ;
 
@@ -270,8 +296,6 @@ singleline_function_body:
     ARROW
     expression
     ;
-
-error: .;
 
 // Other
 identifier: IDENTIFIER ((DOT | COLONCOLON) IDENTIFIER)*?;
