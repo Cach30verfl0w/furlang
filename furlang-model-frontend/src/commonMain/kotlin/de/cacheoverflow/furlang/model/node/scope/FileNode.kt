@@ -20,7 +20,7 @@ package de.cacheoverflow.furlang.model.node.scope
 import de.cacheoverflow.furlang.model.Identifier
 import de.cacheoverflow.furlang.model.Modifier
 import de.cacheoverflow.furlang.model.node.AnnotationNode
-import de.cacheoverflow.furlang.model.node.scope.ScopeNode
+import de.cacheoverflow.furlang.model.util.Named
 import org.antlr.v4.kotlinruntime.Lexer
 
 /**
@@ -29,11 +29,12 @@ import org.antlr.v4.kotlinruntime.Lexer
  */
 class FileNode(
     override val name: Identifier,
-    override val parent: Node?,
+    override val parent: Scope?,
     override val modifier: Modifier,
     override val annotations: List<AnnotationNode>
-) : ScopeNode {
-    override val children: MutableList<Node> = ArrayList()
+) : Scope {
+    override val imports: MutableList<Identifier> = ArrayList()
+    override val children: MutableList<Named> = ArrayList()
     
     companion object {
         fun new(lexer: Lexer, fileName: String): FileNode = FileNode(Identifier(lexer, arrayOf(fileName)), null, Modifier.NONE, emptyList())

@@ -67,8 +67,6 @@ class SourceSyntaxHighlighter : SyntaxHighlighterBase() {
             FurlangLexer.IDENTIFIER -> arrayOf(HighlighterRegistry.Companion.SOURCE.identifierKey)
             FurlangLexer.INTEGER, FurlangLexer.FLOAT -> arrayOf(HighlighterRegistry.Companion.SOURCE.numberKey)
             FurlangLexer.L_BRACE, FurlangLexer.R_BRACE -> arrayOf(HighlighterRegistry.Companion.SOURCE.bracesKey)
-            FurlangLexer.SIGNED_INT, FurlangLexer.UNSIGNED_INT, FurlangLexer.BOOLEAN, FurlangLexer.STRING ->
-                arrayOf(HighlighterRegistry.Companion.SOURCE.identifierKey)
             FurlangLexer.DOUBLE_QUOTE, FurlangLexer.STRING_MODE_TEXT -> arrayOf(HighlighterRegistry.Companion.SOURCE.stringKey)
             FurlangLexer.ML_STRING_BEGIN, FurlangLexer.ML_STRING_END, FurlangLexer.ML_STRING_MODE_TEXT ->
                 arrayOf(HighlighterRegistry.Companion.SOURCE.stringKey)

@@ -18,9 +18,10 @@
 package de.cacheoverflow.furlang.model.node
 
 import de.cacheoverflow.furlang.model.Identifier
+import de.cacheoverflow.furlang.model.util.Named
 
 /**
  * @author Cedric Hammes
  * @since  02/12/2024
  */
-class AnnotationNode(override val name: Identifier) : Node
+class AnnotationNode(override val name: Identifier) : Named
