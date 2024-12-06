@@ -12,8 +12,8 @@ dependencyResolutionManagement {
 }
 
 include(
+    ":furlang-compiler-frontend",
     ":furlang-parser-frontend",
-    ":furlang-model-frontend",
     ":furlang-plugin-intellij"
 )
 rootProject.name = "furlang"

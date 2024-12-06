@@ -15,14 +15,16 @@
  *
  */
 
-package de.cacheoverflow.furlang.model.util
-
-import de.cacheoverflow.furlang.model.Identifier
+package de.cacheoverflow.furlang.compiler.util
 
 /**
+ * @param T The type of data stored in the stack
+ *
  * @author Cedric Hammes
- * @since  05/12/2024
+ * @since  06/12/2024
  */
-interface Named {
-    val name: Identifier
+value class Stack<T>(private val list: MutableList<T> = mutableListOf<T>()): List<T> by list {
+    fun push(value: T): Boolean = list.add(value)
+    fun pop(): T = list.removeAt(list.lastIndex)
+    fun peek(): T = list.last()
 }

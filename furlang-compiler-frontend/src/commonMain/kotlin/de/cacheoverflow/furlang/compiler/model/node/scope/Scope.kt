@@ -17,26 +17,19 @@
 
 package de.cacheoverflow.furlang.model.node.scope
 
-import de.cacheoverflow.furlang.model.Identifier
-import de.cacheoverflow.furlang.model.Modifier
+import de.cacheoverflow.furlang.model.node.Identifier
+import de.cacheoverflow.furlang.model.node.Modifier
 import de.cacheoverflow.furlang.model.node.AnnotationNode
 import de.cacheoverflow.furlang.model.util.Named
-import org.antlr.v4.kotlinruntime.Lexer
 
 /**
  * @author Cedric Hammes
- * @since  05/12/2024
+ * @since  02/12/2024
  */
-class FileNode(
-    override val name: Identifier,
-    override val parent: Scope?,
-    override val modifier: Modifier,
-    override val annotations: List<AnnotationNode>
-) : Scope {
-    override val imports: MutableList<Identifier> = ArrayList()
-    override val children: MutableList<Named> = ArrayList()
-    
-    companion object {
-        fun new(lexer: Lexer, fileName: String): FileNode = FileNode(Identifier(lexer, arrayOf(fileName)), null, Modifier.NONE, emptyList())
-    }
+interface Scope : Named {
+    val parent: Scope?
+    val children: List<Named>
+    val modifier: Modifier
+    val annotations: List<AnnotationNode>
+    val imports: List<Identifier>
 }

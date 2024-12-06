@@ -1,18 +1,38 @@
 [versions]
 furlang = "1.0.0"
-kotlin = "2.1.0" # https://kotlinlang.org/docs/releases.html#release-details
+kotlin = "2.0.21" # https://kotlinlang.org/docs/releases.html#release-details
 antlr = "1.0.0" # https://github.com/Strumenta/antlr-kotlin/releases
+kotest = "5.9.1" # https://github.com/kotest/kotest/releases
+
+# Gradle plugins
+download = "5.6.0" # https://github.com/michel-kraemer/gradle-download-task/releases
+dokka = "1.9.20" # https://github.com/Kotlin/dokka/releases
+kotest-plugin = "6.0.0.M1" # https://github.com/kotest/kotest/releases
+
+# IntelliJ plugin
 intellij = "1.17.4" # https://plugins.gradle.org/plugin/org.jetbrains.intellij
 antlr-intellij = "0.1" # https://github.com/antlr/antlr4-intellij-adaptor/releases
-download = "5.6.0" # https://github.com/michel-kraemer/gradle-download-task/releases
+
+# LLVM binaries
 llvm-prebuilt = "v2023.3.0" # https://github.com/awakecoding/llvm-prebuilt/releases
 llvm-release = "16.0.6" # https://github.com/awakecoding/llvm-prebuilt/releases
 
+# JVM target
 jvm-target = "17"
 
 [libraries]
 antlr-runtime = { module = "com.strumenta:antlr-kotlin-runtime", version.ref = "antlr" }
 antlr-intellij = { module = "org.antlr:antlr4-intellij-adaptor", version.ref = "antlr-intellij" }
+
+kotest-common = { module = "io.kotest:kotest-common", version.ref = "kotest" }
+kotest-engine-framework = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
+kotest-dataset-framework = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
+kotest-assertion-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-junit-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+
+[bundles]
+kotest = ["kotest-common", "kotest-engine-framework", "kotest-dataset-framework", "kotest-assertion-core"]
+
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -20,3 +40,5 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 intellij = { id = "org.jetbrains.intellij", version.ref = "intellij" }
 download = { id = "de.undercouch.download", version.ref = "download" }
 antlr = { id = "com.strumenta.antlr-kotlin", version.ref = "antlr" }
+kotest = { id = "io.kotest.multiplatform", version.ref = "kotest-plugin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

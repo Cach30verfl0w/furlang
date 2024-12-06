@@ -36,7 +36,9 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotest)
     id("maven-publish")
+    idea
 }
 
 val javaTarget = libs.versions.jvm.target.get()
@@ -60,6 +62,10 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":furlang-parser-frontend"))
         }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.bundles.kotest)
+        }
     }
 }
 
@@ -78,7 +84,7 @@ publishing {
         if (this !is MavenPublication) return@configureEach
         pom {
             name = project.name
-            description = "This library provides the Furlang model API"
+            description = "This library contains the Frontend of the Furlang compiler"
             url = "https://github.com/cach30verfl0w/furlang"
             licenses {
                 license {

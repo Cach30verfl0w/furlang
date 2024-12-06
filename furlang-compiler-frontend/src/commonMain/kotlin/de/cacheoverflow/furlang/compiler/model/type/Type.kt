@@ -17,7 +17,7 @@
 
 package de.cacheoverflow.furlang.model.type
 
-import de.cacheoverflow.furlang.model.Identifier
+import de.cacheoverflow.furlang.model.node.Identifier
 
 interface Type {
     val literal: Identifier

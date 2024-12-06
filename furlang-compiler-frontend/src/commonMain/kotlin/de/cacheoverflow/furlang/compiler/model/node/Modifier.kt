@@ -15,7 +15,7 @@
  *
  */
 
-package de.cacheoverflow.furlang.model
+package de.cacheoverflow.furlang.model.node
 
 /**
  * Represents a set of modifiers using a bitmask representation. Modifiers are used to define access levels (e.g., `PUBLIC`, `PRIVATE`) or

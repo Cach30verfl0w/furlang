@@ -15,21 +15,14 @@
  *
  */
 
-package de.cacheoverflow.furlang.model.node.scope
+package de.cacheoverflow.furlang.model.util
 
-import de.cacheoverflow.furlang.model.Identifier
-import de.cacheoverflow.furlang.model.Modifier
-import de.cacheoverflow.furlang.model.node.AnnotationNode
-import de.cacheoverflow.furlang.model.util.Named
+import de.cacheoverflow.furlang.model.node.Identifier
 
 /**
  * @author Cedric Hammes
- * @since  02/12/2024
+ * @since  05/12/2024
  */
-interface Scope : Named {
-    val parent: Scope?
-    val children: List<Named>
-    val modifier: Modifier
-    val annotations: List<AnnotationNode>
-    val imports: List<Identifier>
+interface Named {
+    val name: Identifier
 }

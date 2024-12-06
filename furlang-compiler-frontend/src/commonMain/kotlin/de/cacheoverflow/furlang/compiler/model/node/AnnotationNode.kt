@@ -15,11 +15,12 @@
  *
  */
 
-package de.cacheoverflow.furlang.model
+package de.cacheoverflow.furlang.model.node
 
-import de.cacheoverflow.furlang.model.node.scope.FileNode
-import de.cacheoverflow.furlang.frontend.FurlangParserBaseVisitor
+import de.cacheoverflow.furlang.model.util.Named
 
-class FileVisitor(private val fileNode: FileNode) : FurlangParserBaseVisitor<Unit>() {
-    override fun defaultResult() = Unit
-}
+/**
+ * @author Cedric Hammes
+ * @since  02/12/2024
+ */
+class AnnotationNode(override val name: Identifier) : Named
