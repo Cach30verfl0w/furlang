@@ -36,6 +36,7 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    id("maven-publish")
 }
 
 val javaTarget = libs.versions.jvm.target.get()
@@ -58,6 +59,45 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":furlang-parser-frontend"))
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHub"
+            url = uri("https://maven.pkg.github.com/cach30verfl0w/furlang")
+            credentials {
+                username = project.findProperty("github.repository.user")?.toString()?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("github.repository.key")?.toString()?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications.configureEach {
+        if (this !is MavenPublication) return@configureEach
+        pom {
+            name = project.name
+            description = "This library provides the Furlang model API"
+            url = "https://github.com/cach30verfl0w/furlang"
+            licenses {
+                license {
+                    name = "Apache License, version 2.0"
+                    url = "https://www.apache.org/licenses/LICENSE-2.0"
+                }
+            }
+            developers {
+                developer {
+                    id = "cach30verfl0w"
+                    name = "Cedric Hammes"
+                    email = "cach30verfl0w@gmail.com"
+                    roles = listOf("Lead Developer")
+                    timezone = "Europe/Berlin"
+                }
+            }
+            scm {
+                url.set(pom.url)
+            }
         }
     }
 }

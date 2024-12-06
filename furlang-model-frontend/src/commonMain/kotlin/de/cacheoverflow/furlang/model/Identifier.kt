@@ -17,7 +17,7 @@
 
 package de.cacheoverflow.furlang.model
 
-import net.cacheoverflow.furlang.frontend.FurlangLexer
+import de.cacheoverflow.furlang.frontend.FurlangLexer
 import org.antlr.v4.kotlinruntime.Lexer
 
 /**
