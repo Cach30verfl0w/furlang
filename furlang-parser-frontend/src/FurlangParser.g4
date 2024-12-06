@@ -68,7 +68,7 @@ type:
 // Type parameters
 typeParameterDeclarationModifier: KW_VARARG;
 typeParameterDonstraints: COLON expression;
-typeParameterDefault: ARROW expression;
+typeParameterDefault: ARROW (expression | type);
 typeParameterDeclaration: typeParameterDeclarationModifier? IDENTIFIER typeParameterDonstraints? typeParameterDefault?;
 typeParametersDeclaration: L_CHEVRON (typeParameterDeclaration COMMA?)+ R_CHEVRON;
 
@@ -132,10 +132,10 @@ namedFunctionSignature:
     (annotationDeclaration+)?
     (namedFunctionModifier+)?
     KW_FUNCTION
-    typeParameterDeclaration?
+    typeParametersDeclaration?
     IDENTIFIER
     L_PAREN
-    functionValueParameterDeclarations
+    functionValueParameterDeclarations?
     R_PAREN
     (COLON type)?;
 namedFunctionDeclaration:
