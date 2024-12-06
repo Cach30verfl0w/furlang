@@ -99,6 +99,22 @@ value_parameter_declarations: (value_parameter_declaration COMMA?)+;
 annotation_usage:
     AT
     IDENTIFIER
+    annotation_parameters?
+    ;
+
+annotation_parameters:
+    L_PAREN
+    annotation_parameter+
+    R_PAREN
+    ;
+
+annotation_parameter:
+    (
+        IDENTIFIER
+        EQUALS
+    )?
+    expression
+    COMMA?
     ;
 
 annotations_usage: (annotation_usage NL)+;
@@ -188,6 +204,7 @@ expression:
     | expression (PLUS | MINUS) expression
     | expression (EQUALS | NOT_EQUALS) expression
     | <assoc_right> expression (ASSIGN) expression
+    | identifier
     | IDENTIFIER
     ;
 
@@ -260,6 +277,8 @@ ml_string:
     ;
 
 // Function
+function_calling_convention: KW_CALLCONV L_PAREN simple_string R_PAREN;
+
 function_modifier:
     KW_PUBLIC
     | KW_PROTECTED
@@ -267,12 +286,13 @@ function_modifier:
     | KW_INTERNAL
     | KW_EXTERN
     | KW_CONST
+    | function_calling_convention
     ;
 
 function_declaration:
     annotations_usage?
     function_signature_declaration
-    (multiline_function_body | singleline_function_body)
+    (multiline_function_body | singleline_function_body)?
     ;
 
 function_signature_declaration:

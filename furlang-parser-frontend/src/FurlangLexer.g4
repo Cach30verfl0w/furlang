@@ -73,6 +73,7 @@ KW_FUNCTION: 'fun';
 KW_OPERATOR: 'operator';
 KW_ABSTRACT: 'abstract';
 KW_OPEN: 'open';
+KW_CALLCONV: 'callconv';
 
 KW_CLASS: 'class';
 KW_INTERFACE: 'interface';
