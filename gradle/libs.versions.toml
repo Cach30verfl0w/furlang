@@ -17,6 +17,10 @@ antlr-intellij = "0.1" # https://github.com/antlr/antlr4-intellij-adaptor/releas
 llvm-prebuilt = "v2023.3.0" # https://github.com/awakecoding/llvm-prebuilt/releases
 llvm-release = "16.0.6" # https://github.com/awakecoding/llvm-prebuilt/releases
 
+# Logging
+kotlin-logging = "7.0.3" # https://github.com/oshai/kotlin-logging/releases
+mordant = "3.0.1" # https://github.com/ajalt/mordant/releases
+
 # JVM target
 jvm-target = "17"
 
@@ -24,11 +28,13 @@ jvm-target = "17"
 antlr-runtime = { module = "com.strumenta:antlr-kotlin-runtime", version.ref = "antlr" }
 antlr-intellij = { module = "org.antlr:antlr4-intellij-adaptor", version.ref = "antlr-intellij" }
 
+mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "mordant" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
+
 kotest-common = { module = "io.kotest:kotest-common", version.ref = "kotest" }
 kotest-engine-framework = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-dataset-framework = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
 kotest-assertion-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
-kotest-junit-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 
 [bundles]
 kotest = ["kotest-common", "kotest-engine-framework", "kotest-dataset-framework", "kotest-assertion-core"]

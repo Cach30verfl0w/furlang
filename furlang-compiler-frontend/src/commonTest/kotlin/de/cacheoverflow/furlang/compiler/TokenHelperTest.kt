@@ -17,11 +17,11 @@
 
 package de.cacheoverflow.furlang.compiler
 
-import de.cacheoverflow.furlang.compiler.util.KitchenSink
+import de.cacheoverflow.furlang.compiler.util.TokenHelper
 import io.kotest.core.spec.style.ShouldSpec
 import kotlin.test.assertEquals
 
-class KitchenSinkTest : ShouldSpec() {
+class TokenHelperTest : ShouldSpec() {
     init {
         should("test getTokensInLineRange") {
             TestHelper.fromParser(
@@ -34,7 +34,7 @@ class KitchenSinkTest : ShouldSpec() {
                 val token = TestHelper.getTokenFromLine(stream, 3)
                 
                 // First test string
-                val firstTestString = TestHelper.tokensToText(KitchenSink.getTokensInLineRange(stream, token, 3))
+                val firstTestString = TestHelper.tokensToText(TokenHelper.findTokensInLineRange(stream, token, 3))
                 println("--------------------------\n$firstTestString--------------------------")
                 assertEquals("""    let result: i32 = value1 + value2
     result = 1 + 1
@@ -42,7 +42,7 @@ class KitchenSinkTest : ShouldSpec() {
                     "Unable to convert token range from line 2 to 4 to string-formatted code")
                 
                 // Second test string
-                val secondTestString = TestHelper.tokensToText(KitchenSink.getTokensInLineRange(stream, token, 1))
+                val secondTestString = TestHelper.tokensToText(TokenHelper.findTokensInLineRange(stream, token, 1))
                 println("--------------------------\n$secondTestString--------------------------")
                 assertEquals("""    result = 1 + 1""".replace("\n", ""), secondTestString.replace("\n", ""),
                     "Unable to convert token from line 3 to string-formatted code")

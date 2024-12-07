@@ -17,6 +17,8 @@
 
 package de.cacheoverflow.furlang.compiler
 
+import io.github.oshai.kotlinlogging.KLogger
+
 /**
  * @param code     The numeric part of the error code, a.e. error 1000 for E1000
  * @param message  The message shown to the user when emitting this error
@@ -25,13 +27,13 @@ package de.cacheoverflow.furlang.compiler
  * @author Cedric Hammes
  * @since  06/12/2024
  */
-data class Error(val code: UShort, val message: String, val severity: Severity) {
+@ConsistentCopyVisibility
+data class Error private constructor(val code: UShort, val message: String, val severity: Severity, val interruptsCompilation: Boolean) {
     init {
         require(message.isNotBlank()) { "Error messages cannot be blank" }
     }
     
     override fun toString(): String = "${severity.short}${code}"
-    fun interruptsCompilation(): Boolean = severity.interruptsCompilation
     
     /**
      * @param short The short literal of the error
@@ -40,9 +42,17 @@ data class Error(val code: UShort, val message: String, val severity: Severity) 
      * @author Cedric Hammes
      * @since  06/12/2024
      */
-    enum class Severity(internal val long: String, internal val short: String, val interruptsCompilation: Boolean = false) {
-        CRITICAL("Error", "E", true),
-        ERROR("Error", "E"),
-        WARNING("Warning", "W")
+    enum class Severity(internal val long: String, internal val short: String, internal val loggerClosure: KLogger.(() -> Any?) -> Unit) {
+        ERROR("error", "E", { error(it) }),
+        WARNING("warning", "W", { warn(it) })
+    }
+    
+    companion object {
+        fun warning(code: UShort, message: String, interruptsCompilation: Boolean = false): Error =
+            Error(code, message, Severity.WARNING, interruptsCompilation)
+        fun error(code: UShort, message: String, interruptsCompilation: Boolean = false): Error =
+            Error(code, message, Severity.ERROR, interruptsCompilation)
+        
+        val TEST: Error = error(1000U, "Test")
     }
 }

@@ -17,37 +17,7 @@
 
 package de.cacheoverflow.furlang.compiler.util
 
-import org.antlr.v4.kotlinruntime.Token
-import org.antlr.v4.kotlinruntime.TokenStream
-import kotlin.math.floor
-
 object KitchenSink {
-    
-    fun getTokensInLineRange(stream: TokenStream, token: Token, lineCount: Int): List<Token> {
-        val halfLineCount = if (lineCount > 1) floor(lineCount / 2f).toInt() else 0
-        val lineRange = (token.line - halfLineCount)..(token.line + halfLineCount)
-        
-        // First, we need to get to the start
-        var index = token.tokenIndex
-        while (index > 0 && stream[index].line in lineRange) {
-            index--
-        }
-        index++
-        
-        // After, we need to collect all tokens in range
-        val tokenList: MutableList<Token> = mutableListOf()
-        val maxIndex = stream.size() - 1
-        while (index > 0 && index < maxIndex) {
-            val token = stream[index]
-            if (token.line !in lineRange)
-                break
-            tokenList.add(token)
-            index++
-        }
-        
-        // Return list
-        return tokenList
-    }
     
     fun replace(string: String, vararg replacements: Any): String {
         val result = StringBuilder(string.length)

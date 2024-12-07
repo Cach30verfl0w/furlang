@@ -17,7 +17,14 @@
 
 package de.cacheoverflow.furlang.compiler
 
+import com.github.ajalt.mordant.terminal.Terminal
 import de.cacheoverflow.furlang.compiler.util.KitchenSink
+import de.cacheoverflow.furlang.compiler.util.TokenHelper
+import io.github.oshai.kotlinlogging.DelegatingKLogger
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KLoggingEventBuilder
+import io.github.oshai.kotlinlogging.Level
+import io.github.oshai.kotlinlogging.Marker
 import org.antlr.v4.kotlinruntime.Parser
 import org.antlr.v4.kotlinruntime.Token
 
@@ -25,7 +32,9 @@ import org.antlr.v4.kotlinruntime.Token
  * @author Cedric Hammes
  * @since  06/12/2024
  */
-class CompilerContext(private val parser: Parser?) {
+class CompilerContext(private val parser: Parser?, logger: KLogger) {
+    private val terminal: Terminal = Terminal()
+    val logger: KLogger = KotlinLoggerWrapper(logger, terminal)
     
     /**
      * This function emits the specified error with the specified optional information to the user. It optionally contains information about
@@ -39,9 +48,29 @@ class CompilerContext(private val parser: Parser?) {
      * @author Cedric Hammes
      * @since  06/12/2024
      */
-    fun emitError(error: Error, token: Token? = null, lineCount: Int = 0, info: Array<Any>) {
+    fun emitError(error: Error, token: Token? = null, lineCount: Int = 0, info: Array<Any> = emptyArray<Any>()) {
+        fun emitString(message: String): Unit = error.severity.loggerClosure.invoke(logger) { message }
         val message = KitchenSink.replace(error.message, *info)
-        val tokens = token?.also { KitchenSink.getTokensInLineRange(requireNotNull(parser).tokenStream, it, lineCount) }
+        val tokens = token?.let { TokenHelper.findTokensInLineRange(requireNotNull(parser).tokenStream, it, lineCount) }
+        val markedCode = token?.let { TokenHelper.visualizeTokens(requireNotNull(tokens), it) }
     }
     
+    /**
+     * This class is implementing a logger wrapper for the internal logger of the [CompilerContext].
+     *
+     * @author Cedric Hammes
+     * @since  07/12/2024
+     */
+    internal class KotlinLoggerWrapper(
+        override val underlyingLogger: KLogger,
+        private val terminal: Terminal
+    ) : KLogger, DelegatingKLogger<KLogger> {
+        override val name: String get() = underlyingLogger.name
+        override fun isLoggingEnabledFor(level: Level, marker: Marker?): Boolean = underlyingLogger.isLoggingEnabledFor(level, marker)
+        
+        override fun at(level: Level, marker: Marker?, block: KLoggingEventBuilder.() -> Unit) {
+            val eventBuilder = KLoggingEventBuilder().apply(block)
+            terminal.println(eventBuilder.message)
+        }
+    }
 }

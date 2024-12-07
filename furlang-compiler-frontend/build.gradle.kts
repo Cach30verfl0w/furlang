@@ -61,6 +61,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":furlang-parser-frontend"))
+            api(libs.kotlin.logging)
+            api(libs.mordant)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
