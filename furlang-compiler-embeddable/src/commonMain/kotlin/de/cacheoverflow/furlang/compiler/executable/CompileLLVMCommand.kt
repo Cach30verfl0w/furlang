@@ -15,22 +15,19 @@
  *
  */
 
-package de.cacheoverflow.furlang.compiler.util
+package de.cacheoverflow.furlang.compiler.executable
 
-object KitchenSink {
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.Context
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
+
+internal class CompileLLVMCommand : CliktCommand(name = "compile-llvm") {
+    override fun help(context: Context): String = "Compile a Furlang project with the LLVM toolchain"
     
-    fun replace(string: String, vararg replacements: Any): String {
-        val result = StringBuilder(string.length)
-        var i = 0
-        while (i < string.length) {
-            if (string[i] == '{' && i + 1 < string.length && string[i + 1] == '}') {
-                result.append(replacements.getOrNull(result.length)?: throw NullPointerException())
-                i += 2
-            } else {
-                result.append(string[i])
-                i++
-            }
-        }
-        return result.toString()
+    val outputFolder: String by option(help = "Folder saving the build output").required()
+    
+    override fun run() {
+    
     }
 }

@@ -56,11 +56,14 @@ kotlin {
         KonanTarget.MACOS_ARM64 -> macosArm64()
         null -> throw GradleException("Target '$systemName' (with arch '$systemArch') is currently not supported")
         else -> throw GradleException("Target '${konanTarget.visibleName}' is currently not supported")
+    }.binaries.executable {
+        entryPoint = "de.cacheoverflow.furlang.compiler.executable.main"
     }
     
     sourceSets {
         commonMain.dependencies {
             implementation(project(":furlang-parser-frontend"))
+            implementation(libs.clikt)
             api(libs.kotlin.logging)
             api(libs.mordant)
         }

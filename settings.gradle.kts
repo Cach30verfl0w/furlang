@@ -12,7 +12,7 @@ dependencyResolutionManagement {
 }
 
 include(
-    ":furlang-compiler-frontend",
+    ":furlang-compiler-embeddable",
     ":furlang-parser-frontend",
     ":furlang-plugin-intellij"
 )

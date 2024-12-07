@@ -1,8 +1,9 @@
 [versions]
 furlang = "1.0.0"
-kotlin = "2.0.21" # https://kotlinlang.org/docs/releases.html#release-details
+kotlin = "2.1.0" # https://kotlinlang.org/docs/releases.html#release-details
 antlr = "1.0.0" # https://github.com/Strumenta/antlr-kotlin/releases
 kotest = "5.9.1" # https://github.com/kotest/kotest/releases
+clikt = "5.0.2" # https://github.com/ajalt/clikt/releases
 
 # Gradle plugins
 download = "5.6.0" # https://github.com/michel-kraemer/gradle-download-task/releases
@@ -25,6 +26,8 @@ mordant = "3.0.1" # https://github.com/ajalt/mordant/releases
 jvm-target = "17"
 
 [libraries]
+clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+
 antlr-runtime = { module = "com.strumenta:antlr-kotlin-runtime", version.ref = "antlr" }
 antlr-intellij = { module = "org.antlr:antlr4-intellij-adaptor", version.ref = "antlr-intellij" }
 

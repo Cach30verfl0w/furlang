@@ -48,11 +48,13 @@ class CompilerContext(private val parser: Parser?, logger: KLogger) {
      * @author Cedric Hammes
      * @since  06/12/2024
      */
-    fun emitError(error: Error, token: Token? = null, lineCount: Int = 0, info: Array<Any> = emptyArray<Any>()) {
+    fun emitError(error: Error, token: Token? = null, lineCount: Int = 5, info: Array<Any> = emptyArray<Any>()) {
         fun emitString(message: String): Unit = error.severity.loggerClosure.invoke(logger) { message }
-        val message = KitchenSink.replace(error.message, *info)
+        
         val tokens = token?.let { TokenHelper.findTokensInLineRange(requireNotNull(parser).tokenStream, it, lineCount) }
-        val markedCode = token?.let { TokenHelper.visualizeTokens(requireNotNull(tokens), it) }
+        val markedCode = token?.let { TokenHelper.visualizeTokensForError(requireNotNull(tokens), it) }
+        val message = KitchenSink.replace(error.message, info)
+        terminal.println((markedCode?: emptyList()).joinToString("\n"))
     }
     
     /**
@@ -64,10 +66,7 @@ class CompilerContext(private val parser: Parser?, logger: KLogger) {
     internal class KotlinLoggerWrapper(
         override val underlyingLogger: KLogger,
         private val terminal: Terminal
-    ) : KLogger, DelegatingKLogger<KLogger> {
-        override val name: String get() = underlyingLogger.name
-        override fun isLoggingEnabledFor(level: Level, marker: Marker?): Boolean = underlyingLogger.isLoggingEnabledFor(level, marker)
-        
+    ) : KLogger by underlyingLogger, DelegatingKLogger<KLogger> {
         override fun at(level: Level, marker: Marker?, block: KLoggingEventBuilder.() -> Unit) {
             val eventBuilder = KLoggingEventBuilder().apply(block)
             terminal.println(eventBuilder.message)

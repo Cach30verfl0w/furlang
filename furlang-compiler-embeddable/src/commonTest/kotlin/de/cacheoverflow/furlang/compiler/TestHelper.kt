@@ -32,7 +32,7 @@ object TestHelper {
         closure(tokenStream, parser)
     }
     fun getTokenFromLine(tokenStream: TokenStream, line: Int): Token =
-        (0..<tokenStream.size()).map { tokenStream[it] }.first { it.line == line }
+        (0..<tokenStream.size()).map { tokenStream[it] }.first { it.line == line && it.channel == 0 }
     fun tokensToText(tokens: List<Token>): String = tokens.map { if (it.type == FurlangParser.Tokens.EOF) "\n" else it.text }
         .joinToString("") { it?: "" }.let { if (it.endsWith("\n")) it else "$it\n" }
 }

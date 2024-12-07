@@ -17,11 +17,13 @@
 
 package de.cacheoverflow.furlang.compiler.util
 
+import com.github.ajalt.mordant.rendering.TextColors.*
+import de.cacheoverflow.furlang.frontend.FurlangParser
 import org.antlr.v4.kotlinruntime.Token
 import org.antlr.v4.kotlinruntime.TokenStream
 import kotlin.math.floor
 
-object TokenHelper {
+internal object TokenHelper {
     fun findTokensInLineRange(stream: TokenStream, token: Token, lineCount: Int): List<Token> {
         val halfLineCount = if (lineCount > 1) floor(lineCount / 2f).toInt() else 0
         val lineRange = (token.line - halfLineCount)..(token.line + halfLineCount)
@@ -48,11 +50,25 @@ object TokenHelper {
         return tokenList
     }
     
-    fun visualizeTokens(tokens: List<Token>, markedToken: Token): String {
-        val stringBuilder = StringBuilder()
+    fun visualizeTokensForError(tokens: List<Token>, markedToken: Token): List<String> {
+        val lines = ArrayList<String>()
+        val lineBuilder = StringBuilder()
+        var range = 0..0
         for (token in tokens) {
-            stringBuilder.append(token)
+            if (token.type == FurlangParser.Tokens.NL) {
+                lines.add(lineBuilder.toString())
+                if (range != 0..0)
+                    lines.add("${" ".repeat(range.first)}${red("~".repeat(range.last - range.first))}")
+                lineBuilder.clear()
+                range = 0..0
+                continue
+            }
+            
+            lineBuilder.append(token.text?: "")
+            if (token.tokenIndex == markedToken.tokenIndex) {
+                range = token.charPositionInLine..(markedToken.charPositionInLine + (token.text?: "").length)
+            }
         }
-        return stringBuilder.toString()
+        return lines
     }
 }
