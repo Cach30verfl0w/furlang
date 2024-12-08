@@ -20,17 +20,32 @@ package de.cacheoverflow.furlang.compiler.executable
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.main
-import com.github.ajalt.clikt.core.subcommands
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
+import com.github.ajalt.clikt.parameters.types.enum
+import io.github.oshai.kotlinlogging.Level
+import kotlinx.io.files.Path
 
 internal class FurlangCompilerCommand : CliktCommand() {
     override fun help(context: Context): String = """
-    This application is the compiler toolchain for the Furlang programming
-    language that is used to compile furlang source code into binaries with
-    LLVM. It can be used in combination with a Gradle project to compile a
-    source tree into a single binary.
+    This tool is the CLI wrapper for the Furlang compiler which compiles Furlang project source
+    tree into LLVM binaries for the specified target triple. This tool is mostly used by the Gradle
+    Furlang Gradle plugin to make the compiler usage more developer-friendly.
     """.trimIndent()
+    
+    // Logging
+    val logLevel: Level by option(help = "Max log level printed out by the compiler (default: INFO)").enum<Level>().default(Level.INFO)
+    val logFile: Path? by option(help = "Path to the log output file (optional)").path(mustNotExists = true)
+    
+    // Source tree
+    val sourceFolder: Path by option(help = "Folder containing the source tree").path(mustExist = true, canBeFolder = true).required()
+    val buildFolder: Path by option(help = "Folder for the binary output").path(mustNotExists = true).required()
+    
+    // LLVM options TODO: set default target own platform
+    val llvmTarget: String by option(help = "Target for the LLVM compilation (default: x86_64-pc-linux-gnu)").default("x86_64-pc-linux-gnu")
     
     override fun run() = Unit
 }
 
-fun main(args: Array<String>) = FurlangCompilerCommand().subcommands(CompileLLVMCommand()).main(args)
+fun main(args: Array<String>) = FurlangCompilerCommand().main(args)
