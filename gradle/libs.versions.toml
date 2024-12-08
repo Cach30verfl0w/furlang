@@ -18,6 +18,9 @@ antlr-intellij = "0.1" # https://github.com/antlr/antlr4-intellij-adaptor/releas
 llvm-prebuilt = "v2023.3.0" # https://github.com/awakecoding/llvm-prebuilt/releases
 llvm-release = "16.0.6" # https://github.com/awakecoding/llvm-prebuilt/releases
 
+# Kotlinx
+kotlinx-io = "0.6.0" # https://github.com/Kotlin/kotlinx-io/releases
+
 # Logging
 kotlin-logging = "7.0.3" # https://github.com/oshai/kotlin-logging/releases
 mordant = "3.0.1" # https://github.com/ajalt/mordant/releases
@@ -27,6 +30,7 @@ jvm-target = "17"
 
 [libraries]
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 
 antlr-runtime = { module = "com.strumenta:antlr-kotlin-runtime", version.ref = "antlr" }
 antlr-intellij = { module = "org.antlr:antlr4-intellij-adaptor", version.ref = "antlr-intellij" }

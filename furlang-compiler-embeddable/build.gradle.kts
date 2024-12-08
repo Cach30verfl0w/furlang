@@ -66,6 +66,7 @@ kotlin {
             implementation(libs.clikt)
             api(libs.kotlin.logging)
             api(libs.mordant)
+            api(libs.kotlinx.io)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
