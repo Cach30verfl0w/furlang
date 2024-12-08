@@ -15,6 +15,7 @@
  *
  */
 
+import de.undercouch.gradle.tasks.download.Download
 import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.gradle.internal.os.OperatingSystem
 
@@ -37,11 +38,32 @@ import org.gradle.internal.os.OperatingSystem
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotest)
+    alias(libs.plugins.download)
     id("maven-publish")
     idea
 }
 
 val javaTarget = libs.versions.jvm.target.get()
+
+val releaseVersion = libs.versions.llvm.release.get()
+val llvmSourceTree = layout.buildDirectory.dir("llvm-$releaseVersion").get()
+val llvmArchive = llvmSourceTree.file("llvm.tar.xz").asFile
+
+val downloadLLVMTask = tasks.create<Download>("downloadLLVM") {
+    val system = OperatingSystem.current().name.lowercase().replace("linux", "ubuntu-22.04")
+    val arch = System.getProperty("os.arch").lowercase().replace("amd64", "x86_64")
+    val prebuiltVersion = libs.versions.llvm.prebuilt.get()
+    
+    src("https://github.com/awakecoding/llvm-prebuilt/releases/download/$prebuiltVersion/clang+llvm-$releaseVersion-$arch-$system.tar.xz")
+    dest(llvmArchive)
+    overwrite(false)
+}
+
+val unpackLLVMTask = tasks.create<Exec>("unpackLLVM") {
+    dependsOn(downloadLLVMTask)
+    onlyIf { !llvmSourceTree.asFile.resolve("include").exists() }
+    commandLine("tar", "xf", llvmArchive.absolutePath, "-C", llvmSourceTree.asFile.absolutePath, "--strip-components=1")
+}
 
 kotlin {
     jvmToolchain(javaTarget.toInt())
@@ -56,8 +78,18 @@ kotlin {
         KonanTarget.MACOS_ARM64 -> macosArm64()
         null -> throw GradleException("Target '$systemName' (with arch '$systemArch') is currently not supported")
         else -> throw GradleException("Target '${konanTarget.visibleName}' is currently not supported")
-    }.binaries.executable {
-        entryPoint = "de.cacheoverflow.furlang.compiler.executable.main"
+    }.apply {
+        compilations.getByName("main").cinterops.create("llvm") {
+            defFile(project.layout.projectDirectory.asFile.resolve("src/nativeMain/cinterop/llvm.def").absolutePath)
+            includeDirs(llvmSourceTree.dir("include"))
+            tasks.named(interopProcessingTaskName) {
+                dependsOn(unpackLLVMTask)
+            }
+        }
+        binaries.executable {
+            entryPoint = "de.cacheoverflow.furlang.compiler.executable.main"
+            linkerOpts("-L${llvmSourceTree.asFile.resolve("lib").absolutePath}", "-lc")
+        }
     }
     
     sourceSets {

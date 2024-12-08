@@ -1,0 +1,11 @@
+package=de.cacheoverflow.furlang.compiler.llvm
+headers=llvm-c/Core.h
+headerFilter=llvm-c/*
+
+compilerOpts=-std=c++17
+
+# ./llvm-config --libs analysis bitreader bitwriter core linker target analysis ipo instrumentation lto objcarcopts arm aarch64 x86 riscv webassembly
+linkerOpts= \
+   -lLLVMLinker -lLLVMTransformUtils -lLLVMAnalysis -lLLVMProfileData -lLLVMSymbolize -lLLVMDebugInfoPDB -lLLVMDebugInfoMSF \
+   -lLLVMDebugInfoDWARF -lLLVMObject -lLLVMTextAPI -lLLVMMCParser -lLLVMIRReader -lLLVMAsmParser -lLLVMMC -lLLVMDebugInfoCodeView \
+   -lLLVMBitReader -lLLVMCore -lLLVMRemarks -lLLVMBitstreamReader -lLLVMBinaryFormat -lLLVMTargetParser -lLLVMSupport -lLLVMDemangle

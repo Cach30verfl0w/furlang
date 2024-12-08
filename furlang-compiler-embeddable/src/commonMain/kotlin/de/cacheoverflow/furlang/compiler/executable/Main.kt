@@ -25,14 +25,19 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.enum
 import io.github.oshai.kotlinlogging.Level
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.toKString
 import kotlinx.io.files.Path
 
+@OptIn(ExperimentalForeignApi::class)
 internal class FurlangCompilerCommand : CliktCommand() {
     override fun help(context: Context): String = """
     This tool is the CLI wrapper for the Furlang compiler which compiles Furlang project source
     tree into LLVM binaries for the specified target triple. This tool is mostly used by the Gradle
     Furlang Gradle plugin to make the compiler usage more developer-friendly.
     """.trimIndent()
+    
+    private val llvmDefaultTarget: String = "ea"
     
     // Logging
     val logLevel: Level by option(help = "Max log level printed out by the compiler (default: INFO)").enum<Level>().default(Level.INFO)
@@ -43,9 +48,10 @@ internal class FurlangCompilerCommand : CliktCommand() {
     val buildFolder: Path by option(help = "Folder for the binary output").path(mustNotExists = true).required()
     
     // LLVM options TODO: set default target own platform
-    val llvmTarget: String by option(help = "Target for the LLVM compilation (default: x86_64-pc-linux-gnu)").default("x86_64-pc-linux-gnu")
+    val llvmTarget: String by option(help = "Target for the LLVM compilation (default: $llvmDefaultTarget)").default(llvmDefaultTarget)
     
-    override fun run() = Unit
+    override fun run() {
+    }
 }
 
 fun main(args: Array<String>) = FurlangCompilerCommand().main(args)
